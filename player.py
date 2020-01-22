@@ -8,7 +8,7 @@ class Player:
         self.lifes=2
         self.magenta='\u001b[35;1m'
         self.reset= '\u001b[0m'
-        self.white      = '\u001b[37;1m'
+        self.__white      = '\u001b[37;1m'
         self.cap        =['_','^','_']
         self.head       =['|','O','|']
         self.body1      =['^','|','=']
@@ -25,6 +25,7 @@ class Player:
         self.sheild     =False
         self.sheildcoount=0
         self.green      = '\u001b[32;1m'
+        self.red        ='\u001b[31;1m'
 
 
     def updateBullet(self,tmp_grid):
@@ -54,15 +55,15 @@ class Player:
         if self.sheild:
             self.sheildcoount+=1
             for i in range(self.posx,self.posx+3):
-                tmp_grid[self.posycap][i]=self.white + self.cap[i-self.posx] +self.reset
+                tmp_grid[self.posycap][i]=self.__white + self.cap[i-self.posx] +self.reset
             for i in range(self.posx,self.posx+3):
-                tmp_grid[self.posyhead][i]=self.white + self.head[i-self.posx] +self.reset
+                tmp_grid[self.posyhead][i]=self.__white + self.head[i-self.posx] +self.reset
             for i in range(self.posx,self.posx+3):
-                tmp_grid[self.posybody1][i]=self.white + self.body1[i-self.posx] +self.reset
+                tmp_grid[self.posybody1][i]=self.__white + self.body1[i-self.posx] +self.reset
             for i in range(self.posx,self.posx+3):
-                tmp_grid[self.posybody2][i]=self.white + self.body2[i-self.posx] +self.reset
+                tmp_grid[self.posybody2][i]=self.__white + self.body2[i-self.posx] +self.reset
             for i in range(self.posx,self.posx+3):
-                tmp_grid[self.posylegs][i]=self.white + self.legs[i-self.posx] +self.reset
+                tmp_grid[self.posylegs][i]=self.__white + self.legs[i-self.posx] +self.reset
         else:
             for i in range(self.posx,self.posx+3):
                 tmp_grid[self.posycap][i]=self.magenta + self.cap[i-self.posx] +self.reset
@@ -161,10 +162,6 @@ class Player:
     def terminateboss(self,score):
         os.system("tput reset")
         print("\n")
-        print(self.green)
-        print("                                        ","score")
-        print("                                        ",score)
-        print(self.reset)
         dragonmessage=[
                                 '                                                       (  )   /\   _                 (                                                  ',
                                 '                                                        \ |  (  \ ( \.(               )                      _____                      ',
@@ -189,12 +186,16 @@ class Player:
 
         for i in range(0,12):
             print(dragonmessage[i])
-        time.sleep(1)
+        print(self.green)
+        print("score" ,"                                        ",score)
+        print(self.reset)
         sys.exit()
 
     def lost_to_boss(self,score):
         os.system("tput reset")
-        print("score" ,"                                        ",score)
+        print(self.red)
+        print("                                                         Game Over                                      ")
+        print(self.reset)
         dragonmessage=[
                                             '                                                                                                ___                               ',
                                             '                                                                                             .~))>>                                   ',
@@ -214,7 +215,7 @@ class Player:
                                             '                                               (( @@@(.@(@ .    _/`-`  ~|b |>))) //)>>)))))))>>)>                                     ',
                                             '                                                )* @@@ )@*     (@) (@)  /\b|))) //))))))>>))))>>                                     ',
                                             '                                              (( @. )@( @ .   _/       /  \b)) //))>>)))))>>>_._                                     ',
-                                            '           YOU LOST                           )@@ (@@*)@@.  (6,   6) / ^  \b)//))))))>>)))>>   ~~-.                                  ',
+                                            '                         YOU LOST             )@@ (@@*)@@.  (6,   6) / ^  \b)//))))))>>)))>>   ~~-.                                  ',
                                             '                                            ( @jgs@@. @@@.*@_ ~^~^~, /\  ^  \b/)>>))))>>      _.     `,                               ',
                                             '                                             ((@@ @@@*.(@@ .   \^^^/  (  ^   \b)))>>        .          `,                             ',
                                             '                                              ((@@).*@@ )@ )    `-/   ((   ^  ~)_          /             `,                           ',
@@ -238,5 +239,7 @@ class Player:
 
         for i in range(0,34):
             print(dragonmessage[i])
-        time.sleep(1)
+        print(self.green)
+        print("score" ,"                                        ",score)
+        print(self.reset)
         sys.exit()

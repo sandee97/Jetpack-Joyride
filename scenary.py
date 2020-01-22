@@ -80,7 +80,7 @@ class Scenary(Player,Enemy):
                         self.player.update_lifes()
                         self.counter=0
                     elif self.player.lifes==0:
-                        self.player.terminate()
+                        self.player.lost_to_boss(self.score)
 
             '''Player collision with the coin'''
             for co in self.coins:
@@ -95,7 +95,7 @@ class Scenary(Player,Enemy):
                         self.player.update_lifes()
                         self.counter=0
                     elif self.player.lifes==0:
-                        self.player.terminate()
+                        self.player.lost_to_boss(self.score)
 
             '''Player collision with the horizontal beam'''
             for bea in self.horizontal:
@@ -104,28 +104,41 @@ class Scenary(Player,Enemy):
                         self.player.update_lifes()
                         self.counter=0
                     elif self.player.lifes==0:
-                        self.player.terminate()
+                        self.player.lost_to_boss(self.score)
+
             '''Player collision with the typical beam'''
-/
+            for bea in self.typical:
+                if (bea.x<=self.player.posx+2 and bea.x>=self.player.posx and bea.y>=self.player.posycap and bea.y <=self.player.posylegs) or ((bea.x+1)<=self.player.posx+2 and (bea.x+1)>=self.player.posx and (bea.y-1)>=self.player.posycap and (bea.y-1)<=self.player.posylegs) or ((bea.x+2)<=self.player.posx+2 and (bea.x+2)>=self.player.posx and (bea.y-2)>=self.player.posycap and (bea.y-2)<=self.player.posylegs) or ((bea.x+3)<=self.player.posx+2 and (bea.x+3)>=self.player.posx and (bea.y-3)>=self.player.posycap and (bea.y-3)<=self.player.posylegs) or ((bea.x+4)<=self.player.posx+2 and (bea.x+4)>=self.player.posx and (bea.y-4)>=self.player.posycap and (bea.y-4)<=self.player.posylegs):
+                    if self.player.lifes>0 and self.player.sheild==False:
+                        self.player.update_lifes()
+                        self.counter=0
+                    elif self.player.lifes==0:
+                        self.player.lost_to_boss(self.score)
+
             '''Bullets colliding with the vertical beams'''
             for bea in self.vertical:
                 for bul in self.player.Bull:
                     if bul.y<=bea.y and bul.y>=bea.y-4 and bul.x>=bea.x:
                         self.vertical.remove(bea)
                         self.player.Bull.remove(bul)
+                        self.score+=5
+
 
             '''Bullets colliding with the horizontal beams'''
             for bea in self.horizontal:
                 for bul in self.player.Bull:
-                    if bul.y==bea.y:
+                    if bul.y==bea.y and bul.x>=bea.x and bul.x<=bea.x+8:
                         self.horizontal.remove(bea)
                         self.player.Bull.remove(bul)
+                        self.score+=5
+
             '''Bullet collision with typical beams'''
             for bea in self.typical:
                 for bul in self.player.Bull:
                     if ((bul.x==bea.x or bul.x+1==bea.x or bul.x+2==bea.x ) and (bul.y==bea.y)) or ((bul.x==bea.x-1 or bul.x+1==bea.x-1 or bul.x+2==bea.x-1) and (bul.y==bea.y+1)) or ((bul.x==bea.x-2 or bul.x+1==bea.x-2 or bul.x+2==bea.x-2) and (bul.y==bea.y+2)) or ((bul.x==bea.x-3 or bul.x+1==bea.x-3 or bul.x+2==bea.x-3) and (bul.y==bea.y+3)) or ((bul.x==bea.x-4 or bul.x+1==bea.x-4 or bul.x+2==bea.x-3) and (bul.y==bea.y+4)):
                         self.typical.remove(bea)
                         self.player.Bull.remove(bul)
+                        self.score+=5
 
             '''Collision with boss enemy bullet'''
             for dragbul in self.DragonBull:
@@ -144,10 +157,10 @@ class Scenary(Player,Enemy):
                 if bull.x>=self.boo.x and bull.x<=self.boo.x+38 and bull.y>=self.boo.y and bull.y<=self.boo.y+14:
                     self.__bosslifes-=1
                     self.player.Bull.remove(bull)
+                    self.score+=5
 
             if self.__bosslifes==0:
-                    print("Boss died")
-                    self.player.terminateboss(self.score)
+                self.player.terminateboss(self.score)
 
         def update_lifes(self):
             self.counter=0

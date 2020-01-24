@@ -9,15 +9,15 @@ from player import Player
 
 class Engine(Scenary,Player):
     def __init__(self):
-        self.getch = getInput._getChUnix()
+        self.__getch = getInput._getChUnix()
         super().__init__()
-        self.play=Scenary()
+        self._play=Scenary()
         self.__boostcount=0
-        self.boostpress=False
-        self.green='\u001b[32;1m'
-        self.reset= '\u001b[0m'
-        self.yellow     = '\u001b[33;1m'
-
+        self.__boostpress=False
+        self.__green='\u001b[32;1m'
+        self.__reset= '\u001b[0m'
+        self.__yellow  = '\u001b[33;1m'
+        self.__timecounter=0
 
     def run(self):
         def alarmhandler(signum, frame):
@@ -26,51 +26,65 @@ class Engine(Scenary,Player):
             signal.signal(signal.SIGALRM, alarmhandler)
             signal.setitimer(signal.ITIMER_REAL, timeout)
             try:
-                ch = self.getch()
+                ch = self.__getch()
                 signal.alarm(0)
                 return ch
             except AlarmException:
                 pass
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return ''
-        self.play.prior()
+        self._play.prior()
         while True:
+            self._play.timing=time.time()
             os.system("tput reset")
-            print(self.green)
-            print("score",self.play.score,"       ","Boost Value"," ",end=" ")
-            print(self.reset,end=' ')
+            print(self.__green)
+            print("score",self._play.score,"           ","Boost Value"," ",end=" ")
             speed(self.__boostcount)
-            print("")
-            print("")
-            self.play.check()
-            self.play.checkCollisions()
-            self.play.background()
-            self.play.shh=False
+            print("         ",end='  ')
+            print("Time Remaining",self._play.time,"               ",end=" ")
+
+            print(self.__reset,end=' ')
+            self._play.check()
+            self._play.checkCollisions()
+            self._play.background()
+            self._play.shh=False
             if self.__boostcount==600:
                 self.__boostcount=0
-                self.boostpress=False
+                self.__boostpress=False
             key=getinp()
             if key=='d':
-                self.play.Right=True
+                self._play.Right=True
             elif key=='w':
-                self.play.Up=True
+                self._play.Up=True
             elif key=='b':
-                self.play.fired=True
-                self.play.bullets=True
+                self._play.fired=True
+                self._play.bullets=True
             elif key=='a':
-                self.play.left=True
+                self._play.left=True
             elif key=='s':
-                self.play.speedBoost=True
+                self._play.speedBoost=True
             elif key==' ':
                 if self.__boostcount==0:
-                    self.play.shh=True
-                self.boostpress=True
-            elif key=='q':
+                    self._play.shh=True
+                self.__boostpress=True
+            elif key=='q' or key=='Q':
                 os.system('clear')
-                print("Game Exited")
+                print(self.__green)
+                print("                          Game Exited                             ")
+                print(self.__reset)
                 sys.exit()
-            if self.boostpress:
+            if self.__boostpress:
                 self.__boostcount+=1
+            self.__timecounter+=1
+            if self.__timecounter%4==0:
+                self._play.time-=time.time()-self._play.timing
+                self._play.time=int(self._play.time)
+            if self._play.time==0:
+                os.system("clear")
+                print(self.__yellow)
+                print("                             TIME UP                               ")
+                print(self.__reset)
+                sys.exit()
 
 def speed(boostcount):
     if boostcount>=100 and boostcount<200:
